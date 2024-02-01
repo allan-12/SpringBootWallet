@@ -18,15 +18,12 @@ public class AccountServiceImpl implements AccountService{
     public Account performTransaction(String accountId, double amount, Transaction.TransactionType type) {
         Account account = accountRepository.findById(accountId);
         if (account == null) {
-            // Gérer le cas où le compte n'existe pas
             return null;
         }
 
-        // Création de la transaction avec la date et l'heure actuelles
         LocalDateTime transactionDateTime = LocalDateTime.now();
         Transaction transaction = new Transaction(null, null, amount, transactionDateTime, accountId, type);
 
-        // Mise à jour du solde du compte
         double updatedBalance;
         if (type == Transaction.TransactionType.CREDIT) {
             updatedBalance = account.getBalance() + amount;
@@ -35,12 +32,10 @@ public class AccountServiceImpl implements AccountService{
         }
         account.setBalance(updatedBalance);
 
-        // Ajout de la transaction à la liste des transactions du compte
         List<Transaction> transactions = account.getTransactions();
         transactions.add(transaction);
         account.setTransactions(transactions);
 
-        // Mise à jour du compte dans la base de données
         accountRepository.update(accountId, account);
 
         return account;
