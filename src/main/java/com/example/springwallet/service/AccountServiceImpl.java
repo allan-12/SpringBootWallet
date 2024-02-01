@@ -15,31 +15,6 @@ public class AccountServiceImpl implements AccountService{
     public AccountServiceImpl(AccountRepository accountRepository) {
         this.accountRepository = accountRepository;
     }
-    public Account performTransaction(String accountId, double amount, Transaction.TransactionType type) {
-        Account account = accountRepository.findById(accountId);
-        if (account == null) {
-            return null;
-        }
-
-        LocalDateTime transactionDateTime = LocalDateTime.now();
-        Transaction transaction = new Transaction(null, null, amount, transactionDateTime, accountId, type);
-
-        double updatedBalance;
-        if (type == Transaction.TransactionType.CREDIT) {
-            updatedBalance = account.getBalance() + amount;
-        } else {
-            updatedBalance = account.getBalance() - amount;
-        }
-        account.setBalance(updatedBalance);
-
-        List<Transaction> transactions = account.getTransactions();
-        transactions.add(transaction);
-        account.setTransactions(transactions);
-
-        accountRepository.update(accountId, account);
-
-        return account;
-    }
 
     @Override
     public void insertAccount(Account account) {
